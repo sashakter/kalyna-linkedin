@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: linkedin-scraper-api
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn -b 0.0.0.0:5000 app:app"
+    plan: free
+    envVars:
+      - key: REDIS_URL
+        value: redis://red-XXXXXXXXXX.render.com:6379/0
+
+  - type: worker
+    name: celery-worker
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A scheduler.celery_app worker --loglevel=info"
+    plan: free
+    envVars:
+      - key: REDIS_URL
+        value: redis://red-XXXXXXXXXX.render.com:6379/0
